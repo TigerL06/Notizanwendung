@@ -1,133 +1,155 @@
-let parent = document.querySelector("#main");
+// Base URL for backend API
+const backendUrl = 'http://localhost:3000';
+
+// Select elements
 let button = document.querySelector("#add");
-let container = document.querySelector("#container");
 let searchInput = document.querySelector("#search");
- 
+
+// Event listener for "Add" button
 button.addEventListener("click", function () {
-  container.remove();
+  const container = document.querySelector("#container");
+  if (container) container.remove();
   add();
 });
- 
+
 function add() {
+  const existingContainer = document.querySelector("#container");
+  if (existingContainer !== null) {
+    existingContainer.remove();
+  }
   if (document.querySelector("#container") === null) {
     let header = document.querySelector("#header");
     header.innerHTML = "Add";
- 
+
     let container = document.createElement('div');
     container.setAttribute("id", "container");
- 
+
     let title = document.createElement("h2");
     title.innerHTML = "Geben Sie hier den Titel für diese Notiz ein.";
-    let title_input = document.createElement("input");
-    title_input.setAttribute("type", "text");
- 
-    let text_input = document.createElement("h2");
-    text_input.innerHTML = "Geben Sie hier den Text für diese Notiz ein.";
+    let titleInput = document.createElement("input");
+    titleInput.setAttribute("type", "text");
+
+    let textInput = document.createElement("h2");
+    textInput.innerHTML = "Geben Sie hier den Text für diese Notiz ein.";
     let input = document.createElement("input");
     input.setAttribute("type", "text");
- 
+
     let button = document.createElement("button");
     button.innerHTML = "Add";
     button.setAttribute("id", "button");
- 
+
     container.appendChild(title);
-    container.appendChild(title_input);
-    container.appendChild(text_input);
+    container.appendChild(titleInput);
+    container.appendChild(textInput);
     container.appendChild(input);
     container.appendChild(button);
- 
+
     let parent = document.querySelector("#main");
     parent.appendChild(container);
- 
-    button.addEventListener("click", function () {
-      let newNote = {
-        title: title_input.value,
-        mainText: input.value
+
+    button.addEventListener("click", async function () {
+      const newNote = {
+        title: titleInput.value,
+        mainText: input.value,
       };
-      if (newNote.title && newNote.mainText) {
-        addNoteToDatabase(newNote);
-      }
+      await fetch(`${backendUrl}/notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newNote),
+      });
+
       container.remove();
       home();
     });
- 
-  } else {
-    let container = document.querySelector("#container");
-    container.remove();
-    add();
   }
 }
- 
+
 function home() {
+  console.log("home() wird aufgerufen");
+
+  let parent = document.querySelector("#main");
+
+  // Clear previous content to prevent duplicates
+  parent.innerHTML = "";
+
   let header = document.querySelector("#header");
-  header.innerHTML = "Notitzwebseite";
-  let container = document.createElement('div');
+  header.innerHTML = "Notizwebseite";
+
+  let container = document.createElement("div");
   container.setAttribute("id", "container");
+
   let top = document.createElement("div");
   top.setAttribute("id", "top");
+
   let input = document.createElement("input");
   input.setAttribute("id", "search");
+  input.setAttribute("placeholder", "Notizen durchsuchen...");
+
   let button = document.createElement("button");
   button.innerHTML = "Add";
   button.setAttribute("id", "add");
+
   let notes = document.createElement("div");
   notes.setAttribute("id", "note");
+
+  // Append elements
   top.appendChild(input);
   top.appendChild(button);
   container.appendChild(top);
   container.appendChild(notes);
   parent.appendChild(container);
-  fetchAndDisplayNotes();  // Initiales Laden der Notizen
+
+  // Event listener for "Add" button
   button.addEventListener("click", function () {
     container.remove();
     add();
   });
+
+  // Display notes
+  fetchAndDisplayNotes();
 }
- 
+
 async function fetchAndDisplayNotes(query = "") {
   try {
-    const response = await fetch('http://localhost:3000/notes?search=' + query, {
-      mode: 'cors'
-    });
- 
+    const response = await fetch(`${backendUrl}/notes`);
+
     if (!response.ok) {
       throw new Error('Fehler beim Abrufen der Daten');
     }
- 
+
     const notes = await response.json();
     let notesContainer = document.querySelector("#note");
     notesContainer.innerHTML = ""; // Clear the notes container
- 
-    // Notizen anzeigen
+
+    // Display notes
     notes.forEach(note => {
       let noteDiv = document.createElement("div");
       noteDiv.className = "note";
- 
+
       let title = document.createElement("h2");
       title.textContent = note.title;
- 
+
       let mainText = document.createElement("p");
       mainText.textContent = note.mainText;
-       let buttonD = document.createElement("button");
-      buttonD.setAttribute("id", "delet");
-      buttonD.innerHTML = "Delet";
+
+      let buttonD = document.createElement("button");
+      buttonD.innerHTML = "Delete";
 
       let buttonE = document.createElement("button");
-      buttonE.setAttribute("id", "edit")
       buttonE.innerHTML = "Edit";
 
-      buttonD.addEventListener("click", function () {
-        container.remove();
-        home();
+      // Event listener for delete
+      buttonD.addEventListener("click", async function () {
+        await deleteNoteFromDatabase(note._id);
+        fetchAndDisplayNotes(); // Reload notes
       });
 
+      // Event listener for edit
       buttonE.addEventListener("click", function () {
-        container.remove();
-        edit();
+        editNote(note._id, note.title, note.mainText);
       });
 
-
-      // Elemente hinzufügen
+      // Add elements
       noteDiv.appendChild(title);
       noteDiv.appendChild(mainText);
       noteDiv.appendChild(buttonE);
@@ -138,73 +160,89 @@ async function fetchAndDisplayNotes(query = "") {
     console.error("Fehler:", error);
   }
 }
- 
-function searchNotes() {
-  const query = searchInput.value;
-  fetchAndDisplayNotes(query); // Mit Suchbegriff die Notizen filtern
-}
- 
-async function addNoteToDatabase(note) {
+
+async function deleteNoteFromDatabase(noteId) {
   try {
-    const response = await fetch('http://localhost:3000/notes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(note)
+    const response = await fetch(`${backendUrl}/notes/${noteId}`, {
+      method: 'DELETE',
     });
     if (response.ok) {
-      console.log("Notiz hinzugefügt");
-      searchNotes;
+      console.log("Notiz gelöscht");
     } else {
-      console.error("Fehler beim Hinzufügen der Notiz");
+      console.error("Fehler beim Löschen der Notiz");
     }
   } catch (error) {
     console.error("Fehler:", error);
   }
 }
 
-function edit(){
-    if(document.querySelector("#container") === null){
-      let header = document.querySelector("#header");
-      header.innerHTML = "Edit";
-
-      let container = document.createElement('div');
-      container.setAttribute("id", "container");
-
-      let title = document.createElement("h2");
-      title.innerHTML = "Titel";
-      let title_input = document.createElement("input");
-      title_input.setAttribute("type", "text");
-
-      let text_input = document.createElement("h2");
-      text_input.innerHTML = "Titel";
-      let input = document.createElement("input");
-      input.setAttribute("type", "text");
-
-      let button = document.createElement("button");
-      button.innerHTML = "Edit";
-      button.setAttribute("id", "button");
-
-      container.appendChild(title);
-      container.appendChild(title_input);
-      container.appendChild(text_input);
-      container.appendChild(input);
-      container.appendChild(button);
-
-      let parent = document.querySelector("#main");
-      parent.appendChild(container);
-
-      button.addEventListener("click", function () {
-          container.remove();
-          home();
-      });
-
-  }else{
-      let container = document.querySelector("#container")
-      container.remove();
-      edit();
-  }
+function editNote(noteId, currentTitle, currentMainText) {
+  const existingContainer = document.querySelector("#container");
+  if (existingContainer !== null) {
+    existingContainer.remove();
   }
 
-  
+  let header = document.querySelector("#header");
+  header.innerHTML = "Edit";
+
+  let container = document.createElement('div');
+  container.setAttribute("id", "container");
+
+  let title = document.createElement("h2");
+  title.innerHTML = "Titel";
+  let title_input = document.createElement("input");
+  title_input.setAttribute("type", "text");
+  title_input.value = currentTitle;
+
+  let text_input = document.createElement("h2");
+  text_input.innerHTML = "Text";
+  let input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.value = currentMainText;
+
+  let button = document.createElement("button");
+  button.innerHTML = "Save";
+
+  container.appendChild(title);
+  container.appendChild(title_input);
+  container.appendChild(text_input);
+  container.appendChild(input);
+  container.appendChild(button);
+
+  let parent = document.querySelector("#main");
+  parent.appendChild(container);
+
+  button.addEventListener("click", async function () {
+    const updatedNote = {
+      title: title_input.value,
+      mainText: input.value,
+    };
+    await updateNoteInDatabase(noteId, updatedNote);
+    container.remove();
+    home();
+  });
+}
+
+async function updateNoteInDatabase(noteId, note) {
+  try {
+    const response = await fetch(`${backendUrl}/notes/${noteId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(note)
+    });
+    if (response.ok) {
+      console.log("Notiz aktualisiert");
+    } else {
+      console.error("Fehler beim Aktualisieren der Notiz");
+    }
+  } catch (error) {
+    console.error("Fehler:", error);
+  }
+}
+
+// Initialize the app
+window.onload = function () {
+  fetchAndDisplayNotes();
+};
