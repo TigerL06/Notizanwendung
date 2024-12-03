@@ -41,9 +41,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                ssh user@<192.168.186.1> "mkdir -p /var/www/myapp"
-                scp -r * user@<192.168.186.1>:/var/www/myapp
-                ssh user@<192.168.186.1> "pm2 restart all"
+                ssh user@192.168.186.1 "mkdir -p /var/www/myapp"
+                scp -r * user@192.168.186.1:/var/www/myapp
+                ssh user@192.168.186.1 "pm2 restart all"
                 '''
             }
         }
@@ -52,16 +52,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed.'
-        }
-        success {
-            mail to: 'L.Koch.inf22@stud.bbbaden.ch',
-                 subject: "Pipeline Success: ${env.JOB_NAME}",
-                 body: "Good job! The pipeline '${env.JOB_NAME}' completed successfully.\n\nYou can check the details in Jenkins."
-        }
-        failure {
-            mail to: 'L.Koch.inf22@stud.bbbaden.ch',
-                 subject: "Pipeline Failure: ${env.JOB_NAME}",
-                 body: "Oops! The pipeline '${env.JOB_NAME}' failed.\n\nPlease check Jenkins logs for details."
         }
     }
 }
