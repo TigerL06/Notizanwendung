@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
     agent any
 
     environment {
@@ -9,7 +9,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                checkout scm
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/TigerL06/Notizanwendung.git',
+                        credentialsId: 'notizID' // Verwende hier den Namen der Credentials
+                    ]]
+                ])
             }
         }
         
@@ -58,4 +65,3 @@ pipeline {
         }
     }
 }
-
