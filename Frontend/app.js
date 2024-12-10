@@ -1,3 +1,5 @@
+// app.js
+
 // Base URL for backend API
 const backendUrl = 'http://localhost:3000';
 

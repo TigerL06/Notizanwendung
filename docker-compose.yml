@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb+srv://HeissiSchoggi:GurgeleIschWichtig420@m324m321.bdyvh.mongodb.net/?retryWrites=true&w=majority&appName=M324M321
+    depends_on:
+      - database
+
+  database:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
