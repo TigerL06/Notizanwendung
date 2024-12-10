@@ -3,18 +3,34 @@ pipeline {
     stages {
         stage('Build Backend') {
             steps {
-                dir('API') { // Wechsel in den API-Ordner
-                    bat 'npm install' // Installiere Abhängigkeiten
+                dir('API') {
+                    bat 'npm install'
                 }
             }
         }
         stage('Prepare Frontend') {
             steps {
-                dir('Frontend') { // Wechsel in den Frontend-Ordner
-                    echo 'Frontend does not require a build step. Preparing files for deployment.'
-                    // Optional: Kopieren Sie Dateien an einen Zielort, falls benötigt
+                dir('Frontend') {
+                    echo 'Static files prepared for deployment'
                 }
             }
+        }
+        stage('Deploy to Test System') {
+            steps {
+                echo 'Deploying Backend and Frontend to Test System...'
+                // Beispiel: Deployment-Schritte hier hinzufügen
+            }
+        }
+    }
+    post {
+        failure {
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        always {
+            echo "Pipeline finished with status: ${currentBuild.currentResult}"
         }
     }
 }
