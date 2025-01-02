@@ -1,7 +1,7 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../server'); // Pfad anpassen, falls nötig
-const { expect } = chai;
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import { expect } from 'chai';
+import server from '../server.js'; // Den Pfad anpassen, falls nötig
 
 chai.use(chaiHttp);
 

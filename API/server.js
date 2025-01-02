@@ -1,17 +1,25 @@
-const express = require('express');
-const cors = require('cors'); // Import CORS package
-const { MongoClient, ObjectId } = require('mongodb');
-const bodyParser = require('body-parser');
-const path = require('path'); // For serving static files
+import express from 'express';
+import cors from 'cors';
+import { MongoClient, ObjectId } from 'mongodb';
+import bodyParser from 'body-parser';
+import path from 'path'; // For serving static files
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
+// __dirname erstellen
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: './key.env' });
 
 const app = express();
 const port = 3000;
 
-// MongoDB connection details
+// MongoDB-Verbindungsdetails aus Umgebungsvariablen
 const url = process.env.MONGODB_URI;
 
 if (!url) {
-    console.error('Error: MONGODB_URI environment variable is not set.');
+    console.error('Error: mongoDBUrl is not set in key.env');
     process.exit(1);
 }
 
@@ -145,3 +153,5 @@ app.delete('/notes/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+export default app;
