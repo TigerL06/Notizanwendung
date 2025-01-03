@@ -30,10 +30,22 @@ pipeline {
             }
         }
 
+        stage('Deploy to Test System') {
+            steps {
+                echo 'Deploying Backend to Test System...'
+                // Hier kann ein echter Deploy-Befehl stehen
+            }
+        }
+    }
+
     post {
         failure {
             echo 'Pipeline failed!'
-            bat 'curl -H "Content-Type: application/json" -X POST -d "{^\"content^\": ^\"Pipeline Status: ${currentBuild.currentResult}^\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
+            // Beispiel: Slack-Benachrichtigung oder E-Mail senden
+            echo 'Pipeline failed! Check the logs for more details.'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
         }
         always {
             echo "Pipeline finished with status: ${currentBuild.currentResult}"
