@@ -22,14 +22,6 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
-            steps {
-                dir('API') {
-                    bat 'npm install'
-                }
-            }
-        }
-
         stage('Deploy to Test System') {
             steps {
                 echo 'Deploying Backend to Test System...'
@@ -41,11 +33,11 @@ pipeline {
     post {
         failure {
             echo 'Pipeline failed!'
-            // Beispiel: Slack-Benachrichtigung oder E-Mail senden
-            echo 'Pipeline failed! Check the logs for more details.'
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"❌ Jenkins Pipeline failed!\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
         }
         success {
             echo 'Pipeline completed successfully!'
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"✅ Jenkins Pipeline succeeded!\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
         }
         always {
             echo "Pipeline finished with status: ${currentBuild.currentResult}"
