@@ -22,22 +22,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to Test System') {
+        stage('Build Backend') {
             steps {
-                echo 'Deploying Backend to Test System...'
-                // Hier kann ein echter Deploy-Befehl stehen
+                dir('API') {
+                    bat 'npm install'
+                }
             }
         }
-    }
 
     post {
         failure {
             echo 'Pipeline failed!'
-            bat 'curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"❌ Jenkins Pipeline failed!\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-            bat 'curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"✅ Jenkins Pipeline succeeded!\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{^\"content^\": ^\"Pipeline Status: ${currentBuild.currentResult}^\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'
         }
         always {
             echo "Pipeline finished with status: ${currentBuild.currentResult}"
