@@ -43,14 +43,14 @@ pipeline {
             echo 'Pipeline failed!'
             bat """
             set BUILD_STATUS=FAILURE
-            curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"❌ Pipeline Status: %BUILD_STATUS%\\"}" https://discord.com/api/webhooks/YOUR_WEBHOOK_URL
+            curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"❌ Pipeline Status: %BUILD_STATUS%\\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-
             """
         }
         success {
             echo 'Pipeline completed successfully!'
             bat """
             set BUILD_STATUS=SUCCESS
-            curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"✅ Pipeline Status: %BUILD_STATUS%\\"}" https://discord.com/api/webhooks/YOUR_WEBHOOK_URL
+            curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"✅ Pipeline Status: %BUILD_STATUS%\\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-
             """
         }
         always {
