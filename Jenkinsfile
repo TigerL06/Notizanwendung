@@ -41,9 +41,7 @@ pipeline {
     post {
         failure {
             echo 'Pipeline failed!'
-            // Beispiel: Slack-Benachrichtigung oder E-Mail senden
-            echo 'Pipeline failed! Check the logs for more details.'
-        }
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{^\"content^\": ^\"Pipeline Status: ${currentBuild.currentResult}^\"}" https://discord.com/api/webhooks/1324751984674209935/4tIrEWqGVpv2JqXJwIbV6JHctUPbcPAS9-4H8xIlqGIqcnHkjlKDZ-nMMki95MDzxJC-'        }
         success {
             echo 'Pipeline completed successfully!'
         }
