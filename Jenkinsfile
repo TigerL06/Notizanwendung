@@ -17,7 +17,7 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 dir('API') {
-                    bat 'npm test'
+                    bat 'npm test -- --forceExit'
                 }
             }
         }
