@@ -8,15 +8,15 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                dir('Backend') {
-                    bat 'npm install'
-                }
+                dir('API') {
+                bat 'if exist package.json (npm install) else (echo package.json not found & exit /b 1)'
+            }
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                dir('Backend') {
+                dir('API') {
                     bat 'npm test'
                 }
             }
