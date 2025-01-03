@@ -24,7 +24,7 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                dir('Backend') {
+                dir('API') {
                     bat 'npm run build'
                 }
             }
