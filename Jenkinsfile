@@ -1,30 +1,54 @@
-pipeline { 
+pipeline {
     agent any
+
+    environment {
+        NODE_ENV = 'test'
+    }
+
     stages {
-        stage('Build Backend') {
+        stage('Checkout Code') {
             steps {
-                dir('API') {
+                git branch: 'main', url: 'https://github.com/TigerL06/Notizanwendung.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('Backend') {
                     bat 'npm install'
                 }
             }
         }
-        stage('Prepare Frontend') {
+
+        stage('Run Unit Tests') {
             steps {
-                dir('Frontend') {
-                    echo 'Static files prepared for deployment'
+                dir('Backend') {
+                    bat 'npm test'
                 }
             }
         }
+
+        stage('Build Backend') {
+            steps {
+                dir('Backend') {
+                    bat 'npm run build'
+                }
+            }
+        }
+
         stage('Deploy to Test System') {
             steps {
-                echo 'Deploying Backend and Frontend to Test System...'
-                // Beispiel: Deployment-Schritte hier hinzufügen
+                echo 'Deploying Backend to Test System...'
+                // Hier kann ein echter Deploy-Befehl stehen
             }
         }
     }
+
     post {
         failure {
             echo 'Pipeline failed!'
+            // Beispiel: Slack-Benachrichtigung oder E-Mail senden
+            echo 'Pipeline failed! Check the logs for more details.'
         }
         success {
             echo 'Pipeline completed successfully!'
