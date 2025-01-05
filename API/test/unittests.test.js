@@ -90,5 +90,9 @@ describe('Notes API', () => {
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('error', 'Invalid ID');
     });
+
+    test('Force failure', () => {
+        throw new Error('This is a forced test failure');
+      });
       
 });
