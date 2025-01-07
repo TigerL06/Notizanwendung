@@ -9,8 +9,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('API') {
-                    bat 'if exist package.json (npm install) else (echo package.json not found & exit /b 1)'
-                }
+                bat 'if exist package.json (npm install) else (echo package.json not found & exit /b 1)'
+            }
             }
         }
 
@@ -18,6 +18,14 @@ pipeline {
             steps {
                 dir('API') {
                     bat 'npm test -- --forceExit'
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('API') {
+                    bat 'npm install'
                 }
             }
         }
