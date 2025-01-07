@@ -1,0 +1,15 @@
+# prometheus.yml
+
+# Prometheus Configuration
+scrape_configs:
+  - job_name: 'webapp'
+    static_configs:
+      - targets: ['webapp:3000']
+
+  - job_name: 'database'
+    static_configs:
+      - targets: ['database:27017']
+
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['localhost:9323']  # Node Exporter or similar, optional
