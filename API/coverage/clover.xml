@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1735916930009" clover="3.2.0">
-  <project timestamp="1735916930009" name="All files">
+<coverage generated="1736242475684" clover="3.2.0">
+  <project timestamp="1736242475684" name="All files">
     <metrics statements="73" coveredstatements="36" conditionals="26" coveredconditionals="6" methods="7" coveredmethods="4" elements="106" coveredelements="46" complexity="0" loc="73" ncloc="73" packages="1" files="1" classes="1"/>
     <file name="server.js" path="C:\Users\kochl\Desktop\IMS\BBB\LB 321_324\LB\Notizanwendung\API\server.js">
       <metrics statements="73" coveredstatements="36" conditionals="26" coveredconditionals="6" methods="7" coveredmethods="4"/>
