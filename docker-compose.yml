@@ -46,7 +46,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false  # Sicherheit deaktivieren (nur fÃ¼r Entwicklung)
+      - xpack.security.enabled=false  # Sicherheit deaktivieren (nur für Entwicklung)
     ports:
       - "9200:9200"
     volumes:
