@@ -32,6 +32,7 @@ pipeline {
 
         stage('Deploy to Test System') {
             steps {
+                 echo 'Deploying Backend to Test System...'
                  bat 'scp -r API user@your-server:/path/to/deploy'
                  bat 'ssh user@your-server "pm2 restart my-app"'
             }
